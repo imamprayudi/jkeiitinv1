@@ -46,7 +46,7 @@ echo "<h3>Selamat datang, " . $_SESSION['user'] . "</h3>";
 <div class="container mt-5">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Data Pemasukan</h4>
+            <h4 class="mb-0">Data Pengeluaran</h4>
         </div>
 
         <div class="card-body">
@@ -67,12 +67,12 @@ echo "<h3>Selamat datang, " . $_SESSION['user'] . "</h3>";
                     <label class="form-label">Jenis Dokumen</label>
                     <select id="jenisdok" name="jenisdok" class="form-select" required>
                         <option selected value="ALL">ALL</option>
-                        <option value="23BC">23BC</option>
-                        <option value="26BC">26BC</option>
                         <option value="27BC">27BC</option>
-                        <option value="27GB">27GB</option>
-                        <option value="40BC">40BC</option>
-                        <option value="262BC">262BC</option>
+                        <option value="25BC">25BC</option>
+                        <option value="25BCSCRAP">25BCSCRAP</option>
+                        <option value="27BC">27BC</option>
+                        <option value="30BC">30BC</option>
+                        <option value="261BC">261BC</option>
 
                     </select>
                 </div>
@@ -138,10 +138,13 @@ function downloadCSV(filename, csvText) {
     link.click();
 }
 
+
+
 let user = '';
 let level = '';
-let urlmasukdetail = '';
+let urlkeluardetail = '';
 let data = [];   // <-- variabel global
+
 
 fetch('getsession.php', 
 {
@@ -156,17 +159,17 @@ fetch('getsession.php',
 {
   user = data.user;
   level = data.level;
-  urlmasukdetail = data.urlmasukdetail;  
+  urlkeluardetail = data.urlkeluardetail;  
 }) 
 .catch(err => console.error(err));
 
-async function getMasukDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
+async function getKeluarDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
 {
   let awal = tglawal;
   let akhir = tglakhir;
   try 
   {
-    const response = await fetch(urlmasukdetail, 
+    const response = await fetch(urlkeluardetail, 
     {
       method: 'POST',
       credentials: "include",
@@ -182,6 +185,7 @@ async function getMasukDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
       })
     });
   
+
     const reply = await response.json();
     data = reply.data;  
     const table = document.getElementById("dataTable");
@@ -241,6 +245,7 @@ async function getMasukDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
   }
 
 }
+
 // ---------------------------------------------------------------------------
 document.addEventListener('submit', function(e)
 {
@@ -257,7 +262,7 @@ document.addEventListener('submit', function(e)
     alert("The start date cannot be greater than the end date!");
     return;
   } 
-  getMasukDetail(tglawal,tglakhir,dokjenis,nomorbc,partno);
+  getKeluarDetail(tglawal,tglakhir,dokjenis,nomorbc,partno);
 
 });
 

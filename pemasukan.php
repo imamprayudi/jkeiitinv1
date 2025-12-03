@@ -43,12 +43,11 @@ session_start();
 
 </style>
 <body class="bg-light">
-  <?php include 'menu.php';
-
-echo "<h3>Selamat datang, " . $_SESSION['user'] . "</h3>";
+<?php 
+  include 'menu.php';
 ?>
 
-
+<h3 class="mb-3">LAPORAN PER BULAN</h3>
 <div class="container-fluid mt-3">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">

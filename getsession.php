@@ -35,6 +35,7 @@ if (isset($_SESSION['user']))
   $urlmaterial = $env['API_MATERIAL_URL'];
   $urlfg = $env['API_FG_URL'];
   $urlfa = $env['API_FA_URL'];
+  $urlsum = $env['API_SUM_URL'];
   // Buat array respons JSON
   $response = array(
     'user' => $user,
@@ -45,7 +46,8 @@ if (isset($_SESSION['user']))
     'urlscrap' => $urlscrap,
     'urlmaterial' => $urlmaterial,
     'urlfg' => $urlfg,
-    'urlfa' => $urlfa
+    'urlfa' => $urlfa,
+    'urlsum' => $urlsum
   );
   echo json_encode($response);
 } else 

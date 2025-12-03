@@ -92,18 +92,23 @@ echo "<h3>Selamat datang, " . $_SESSION['user'] . "</h3>";
                     <label class="form-label">Part Number</label>
                     <input type="text" id="partnumber" name="partnumber" class="form-control" placeholder="Masukkan Part Number">
                 </div>
+<div id="loading" class="text-center d-none">
+    <div class="spinner-border text-primary" role="status"></div>
+    <div>Memuat data...</div>
+</div>
+               <div class="d-flex">
+    <button type="submit" class="btn btn-primary">
+        Submit
+    </button>
 
-                <button type="submit" class="btn btn-primary">
-                    Submit
-                </button>
-
+    <button id="btnCsv" type="button" class="btn btn-success ms-auto">
+        Download CSV
+    </button>
+</div>
             </form>
-
         </div>
     </div>
-    
 </div>
-<button id="btnCsv" class="btn btn-success mb-3">Download CSV</button>
 
 <div class="table-responsive">
 <table id="dataTable" class="table table-bordered table-striped table-hover">
@@ -114,6 +119,14 @@ echo "<h3>Selamat datang, " . $_SESSION['user'] . "</h3>";
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+
+ function showLoading() {
+    document.getElementById("loading").classList.remove("d-none");
+}
+
+function hideLoading() {
+    document.getElementById("loading").classList.add("d-none");
+}
 
 // Convert array object ke CSV
 function convertToCSV(data) {
@@ -170,6 +183,7 @@ async function getMasukDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
 {
   let awal = tglawal;
   let akhir = tglakhir;
+  showLoading();
   try 
   {
     const response = await fetch(urlmasukdetail, 
@@ -244,6 +258,9 @@ async function getMasukDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
   } catch (error) 
   {        
     console.error(error);
+  }finally 
+  {
+    hideLoading();
   }
 
 }

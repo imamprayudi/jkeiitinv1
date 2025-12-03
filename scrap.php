@@ -68,8 +68,8 @@ echo "<h3>Selamat datang, " . $_SESSION['user'] . "</h3>";
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Part Number</label>
-                    <input type="text" id="partnumber" name="partnumber" class="form-control" placeholder="Masukkan Part Number">
+                    <label class="form-label">Kode Barang</label>
+                    <input type="text" id="partnumber" name="partnumber" class="form-control" placeholder="Masukkan Kode Barang">
                 </div>
 
                 <button type="submit" class="btn btn-primary">
@@ -125,7 +125,8 @@ function downloadCSV(filename, csvText) {
 
 let user = '';
 let level = '';
-let urlmasukdetail = '';
+let urlperiode = '';
+let urlscrap = '';
 let data = [];   // <-- variabel global
 let mutasi = 'SC';
 
@@ -142,8 +143,8 @@ fetch('getsession.php',
 {
   user = data.user;
   level = data.level;
-  urlperiode = data.urlperiode;  
-  console.log(urlperiode);
+  urlperiode = data.urlperiode;
+  urlscrap = data.urlscrap;  
   getPeriode(mutasi);
 }) 
 .catch(err => console.error(err));
@@ -165,13 +166,7 @@ async function getPeriode(jenismutasi)
     });
 
     const reply = await response.text(); // ambil balasan dari PHP
-    console.log(reply);
-    const isidata = JSON.parse(reply);  
-    console.log(isidata);
-    //data = reply.data; 
-    //console.log(data);
-    // const reply = await response.text(); // ambil balasan dari PHP
-    // const isidata = JSON.parse(reply);  
+    const isidata = JSON.parse(reply);    
     const selecttgl = document.getElementById('periode');
     isidata.forEach((item, index) => {
     const option = document.createElement('option');
@@ -189,13 +184,11 @@ async function getPeriode(jenismutasi)
 }
 
 
-async function getMasukDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
+async function getScrap(per,kodebrg)
 {
-  let awal = tglawal;
-  let akhir = tglakhir;
   try 
   {
-    const response = await fetch(urlmasukdetail, 
+    const response = await fetch(urlscrap, 
     {
       method: 'POST',
       credentials: "include",
@@ -203,11 +196,8 @@ async function getMasukDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: new URLSearchParams({
-        tglawal: awal,
-        tglakhir: akhir,
-        jnsdok: jenisdok,
-        nobc : nomorbc,
-        part : partno
+        periode: per,
+        kodebarang: kodebrg
       })
     });
   
@@ -220,27 +210,12 @@ async function getMasukDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
     tbody.innerHTML = "";
     let judul = `
     <tr>
-        <th rowspan="2" class="text-end">NO</th>
-        <th rowspan="2" class="text-center">JENIS DOK</th>
+        <th class="text-end">NO</th>
+        <th class="text-center">KODE BARANG</th>
 
-        <th colspan="2" class="text-center">DOKUMEN PABEAN</th>
-        <th colspan="2" class="text-center">BUKTI PENERIMAAN BARANG</th>
-
-        <th rowspan="2" class="text-center">PEMASOK</th>
-        <th rowspan="2" class="text-center">PARTNO</th>
-        <th rowspan="2" class="text-center">PARTNAME</th>
-        <th rowspan="2" class="text-center">SAT</th>
-        <th rowspan="2" class="text-center">JUMLAH</th>
-        <th rowspan="2" class="text-center">MATA UANG</th>
-        <th rowspan="2" class="text-center">NILAI</th>
-    </tr>
-
-    <tr>
-        <th class="text-center">NOMOR</th>
-        <th class="text-center">TANGGAL</th>
-
-        <th class="text-center">NOMOR</th>
-        <th class="text-center">TANGGAL</th>
+        <th class="text-center">NAMA BARANG</th>
+        <th class="text-end">JUMLAH</th>
+        <th class="text-center">PERIODE</th>
     </tr>
     `;
     thead.innerHTML += judul;
@@ -249,18 +224,10 @@ async function getMasukDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
     {
       datarow += `<tr>
       <td align="right">${index + 1}</td>
-      <td>${item.jnsdok}</td>
-      <td>${item.dpno}</td>
-      <td>${item.dptgl.substring(0, 10)}</td>
-      <td>${item.bpbno}</td>
-      <td>${item.bpbtgl.substring(0, 10)}</td>
-      <td>${item.pemasok}</td>
-      <td><pre>${item.partno}</pre></td>
-      <td>${item.partname}</td>
-      <td>${item.sat}</td>
+      <td><pre>${item.kodebarang}</pre></td>
+      <td>${item.namabarang}</td>
       <td align="right">${Number(item.jumlah).toFixed(0)}</td>
-      <td>${item.currency}</td>
-      <td align="right">${Number(item.nilai).toFixed(2)}</td>
+      <td align="center">${item.periode}</td>
       </tr>`;
     });
     tbody.innerHTML += datarow;
@@ -274,25 +241,15 @@ async function getMasukDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
 document.addEventListener('submit', function(e)
 {
   e.preventDefault();
-  const tglawal = document.getElementById('startdate').value;
-  const tglakhir = document.getElementById('enddate').value;
-  const dokjenis = document.getElementById('jenisdok').value;
-  const nomorbc = document.getElementById('bcnumber').value;
+  const period = document.getElementById('periode').value;
   const partno = document.getElementById('partnumber').value;
-  let awal = new Date(tglawal);
-  let akhir   = new Date(tglakhir);
-  if (awal > akhir) 
-  {
-    alert("The start date cannot be greater than the end date!");
-    return;
-  } 
- //getMasukDetail(tglawal,tglakhir,dokjenis,nomorbc,partno);
+  getScrap(period,partno);
 
 });
 
 document.getElementById("btnCsv").addEventListener("click", () => {
     const csv = convertToCSV(data);  // ambil data JSON hasil fetch
-    downloadCSV("laporan.csv", csv);
+    downloadCSV("scrap.csv", csv);
 });
 
 </script>

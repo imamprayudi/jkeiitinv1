@@ -269,7 +269,7 @@ document.addEventListener('submit', function(e)
 
 document.getElementById("btnCsv").addEventListener("click", () => {
     const csv = convertToCSV(data);  // ambil data JSON hasil fetch
-    downloadCSV("laporan.csv", csv);
+    downloadCSV("pemasukan.csv", csv);
 });
 
 </script>

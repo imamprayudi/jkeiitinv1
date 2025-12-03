@@ -31,13 +31,17 @@ if (isset($_SESSION['user']))
   $urlmasukdetail = $env['API_MASUKDETAIL_URL'];
   $urlkeluardetail = $env['API_KELUARDETAIL_URL'];
   $urlperiode = $env['API_PERIODE_URL'];
+  $urlscrap = $env['API_SCRAP_URL'];
+  $urlmaterial = $env['API_MATERIAL_URL'];
   // Buat array respons JSON
   $response = array(
     'user' => $user,
     'level' => $level,
     'urlmasukdetail' => $urlmasukdetail,
     'urlkeluardetail' => $urlkeluardetail,
-    'urlperiode' => $urlperiode
+    'urlperiode' => $urlperiode,
+    'urlscrap' => $urlscrap,
+    'urlmaterial' => $urlmaterial
   );
   echo json_encode($response);
 } else 

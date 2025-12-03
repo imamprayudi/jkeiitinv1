@@ -13,7 +13,8 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Data Pengeluaran</title>
+
+    <title>MUTASI MATERIAL</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <style>
@@ -39,6 +40,7 @@ session_start();
     table {
     font-size: 12px;
 }
+
 </style>
 <body class="bg-light">
   <?php include 'menu.php';
@@ -50,53 +52,26 @@ echo "<h3>Selamat datang, " . $_SESSION['user'] . "</h3>";
 <div class="container-fluid mt-3">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Data Pengeluaran</h4>
+            <h4 class="mb-0">MUTASI MATERIAL</h4>
         </div>
 
         <div class="card-body">
-
             <form>
-
                 <div class="mb-3">
-                    <label class="form-label">Start Date</label>
-                    <input type="date" id="startdate" name="startdate" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">End Date</label>
-                    <input type="date" id="enddate" name="enddate" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Jenis Dokumen</label>
-                    <select id="jenisdok" name="jenisdok" class="form-select" required>
-                        <option selected value="ALL">ALL</option>
-                        <option value="27BC">27BC</option>
-                        <option value="25BC">25BC</option>
-                        <option value="25BCSCRAP">25BCSCRAP</option>
-                        <option value="27BC">27BC</option>
-                        <option value="30BC">30BC</option>
-                        <option value="261BC">261BC</option>
-
+                    <label class="form-label">PERIODE</label>
+                    <select id="periode" name="periode" class="form-select" required>
                     </select>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">BC Number</label>
-                    <input type="text" id="bcnumber" name="bcnumber" class="form-control" placeholder="Masukkan BC Number">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Part Number</label>
-                    <input type="text" id="partnumber" name="partnumber" class="form-control" placeholder="Masukkan Part Number">
+                    <label class="form-label">Kode Barang</label>
+                    <input type="text" id="partnumber" name="partnumber" class="form-control" placeholder="Masukkan Kode Barang">
                 </div>
 
                 <button type="submit" class="btn btn-primary">
                     Submit
                 </button>
-
             </form>
-
         </div>
     </div>
     
@@ -142,13 +117,12 @@ function downloadCSV(filename, csvText) {
     link.click();
 }
 
-
-
 let user = '';
 let level = '';
-let urlkeluardetail = '';
+let urlperiode = '';
+let urlscrap = '';
 let data = [];   // <-- variabel global
-
+let mutasi = 'MT';
 
 fetch('getsession.php', 
 {
@@ -163,17 +137,17 @@ fetch('getsession.php',
 {
   user = data.user;
   level = data.level;
-  urlkeluardetail = data.urlkeluardetail;  
+  urlperiode = data.urlperiode;
+  urlmaterial = data.urlmaterial;  
+  getPeriode(mutasi);
 }) 
 .catch(err => console.error(err));
 
-async function getKeluarDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
+async function getPeriode(jenismutasi)
 {
-  let awal = tglawal;
-  let akhir = tglakhir;
   try 
   {
-    const response = await fetch(urlkeluardetail, 
+    const response = await fetch(urlperiode, 
     {
       method: 'POST',
       credentials: "include",
@@ -181,15 +155,46 @@ async function getKeluarDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: new URLSearchParams({
-        tglawal: awal,
-        tglakhir: akhir,
-        jnsdok: jenisdok,
-        nobc : nomorbc,
-        part : partno
+        mutasi: jenismutasi,
+      })
+    });
+
+    const reply = await response.text(); // ambil balasan dari PHP
+    const isidata = JSON.parse(reply);    
+    const selecttgl = document.getElementById('periode');
+    isidata.forEach((item, index) => {
+    const option = document.createElement('option');
+    option.value = item.periode;       // nilai option
+    option.textContent = item.periode; // teks yang 
+    if (index === 0) {
+      option.selected = true;
+    }
+    selecttgl.appendChild(option);
+    });    
+  } catch (error) 
+  {        
+    console.error(error);
+  }
+}
+
+
+async function getMaterial(per,kodebrg)
+{
+  try 
+  {
+    const response = await fetch(urlmaterial, 
+    {
+      method: 'POST',
+      credentials: "include",
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        periode: per,
+        kodebarang: kodebrg
       })
     });
   
-
     const reply = await response.json();
     data = reply.data;  
     const table = document.getElementById("dataTable");
@@ -199,27 +204,14 @@ async function getKeluarDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
     tbody.innerHTML = "";
     let judul = `
     <tr>
-        <th rowspan="2" class="text-end">NO</th>
-        <th rowspan="2" class="text-center">JENIS DOK</th>
-
-        <th colspan="2" class="text-center">DOKUMEN PABEAN</th>
-        <th colspan="2" class="text-center">BUKTI PENERIMAAN BARANG</th>
-
-        <th rowspan="2" class="text-center">PEMASOK</th>
-        <th rowspan="2" class="text-center">PARTNO</th>
-        <th rowspan="2" class="text-center">PARTNAME</th>
-        <th rowspan="2" class="text-center">SAT</th>
-        <th rowspan="2" class="text-center">JUMLAH</th>
-        <th rowspan="2" class="text-center">MATA UANG</th>
-        <th rowspan="2" class="text-center">NILAI</th>
-    </tr>
-
-    <tr>
-        <th class="text-center">NOMOR</th>
-        <th class="text-center">TANGGAL</th>
-
-        <th class="text-center">NOMOR</th>
-        <th class="text-center">TANGGAL</th>
+        <th class="text-end">NO</th>
+        <th class="text-center">KODE BARANG</th>
+        <th class="text-center">NAMA BARANG</th>
+        <th class="text-end">SALDO AWAL</th>
+        <th class="text-end">JUMLAH MASUK</th>
+        <th class="text-end">JUMLAH KELUAR</th>
+        <th class="text-end">SALDO AKHIR</th>
+        <th class="text-center">PERIODE</th>
     </tr>
     `;
     thead.innerHTML += judul;
@@ -228,18 +220,13 @@ async function getKeluarDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
     {
       datarow += `<tr>
       <td align="right">${index + 1}</td>
-      <td>${item.jnsdok}</td>
-      <td>${item.dpno}</td>
-      <td>${item.dptgl.substring(0, 10)}</td>
-      <td>${item.bpbno}</td>
-      <td>${item.bpbtgl.substring(0, 10)}</td>
-      <td>${item.pemasok}</td>
-      <td><pre>${item.partno}</pre></td>
-      <td>${item.partname}</td>
-      <td>${item.sat}</td>
-      <td align="right">${Number(item.jumlah).toFixed(0)}</td>
-      <td>${item.currency}</td>
-      <td align="right">${Number(item.nilai).toFixed(2)}</td>
+      <td><pre>${item.kodebarang}</pre></td>
+      <td>${item.namabarang}</td>
+      <td align="right">${Number(item.saldoawal).toLocaleString('en-US')}</td>
+      <td align="right">${Number(item.masuk).toLocaleString('en-US')}</td>
+      <td align="right">${Number(item.keluar).toLocaleString('en-US')}</td>
+      <td align="right">${Number(item.saldoakhir).toLocaleString('en-US')}</td>
+      <td align="center">${item.periode}</td>
       </tr>`;
     });
     tbody.innerHTML += datarow;
@@ -249,30 +236,19 @@ async function getKeluarDetail(tglawal,tglakhir,jenisdok,nomorbc,partno)
   }
 
 }
-
 // ---------------------------------------------------------------------------
 document.addEventListener('submit', function(e)
 {
   e.preventDefault();
-  const tglawal = document.getElementById('startdate').value;
-  const tglakhir = document.getElementById('enddate').value;
-  const dokjenis = document.getElementById('jenisdok').value;
-  const nomorbc = document.getElementById('bcnumber').value;
+  const period = document.getElementById('periode').value;
   const partno = document.getElementById('partnumber').value;
-  let awal = new Date(tglawal);
-  let akhir   = new Date(tglakhir);
-  if (awal > akhir) 
-  {
-    alert("The start date cannot be greater than the end date!");
-    return;
-  } 
-  getKeluarDetail(tglawal,tglakhir,dokjenis,nomorbc,partno);
+  getMaterial(period,partno);
 
 });
 
 document.getElementById("btnCsv").addEventListener("click", () => {
     const csv = convertToCSV(data);  // ambil data JSON hasil fetch
-    downloadCSV("pengeluaran.csv", csv);
+    downloadCSV("material.csv", csv);
 });
 
 </script>

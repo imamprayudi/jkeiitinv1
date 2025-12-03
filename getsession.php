@@ -33,6 +33,8 @@ if (isset($_SESSION['user']))
   $urlperiode = $env['API_PERIODE_URL'];
   $urlscrap = $env['API_SCRAP_URL'];
   $urlmaterial = $env['API_MATERIAL_URL'];
+  $urlfg = $env['API_FG_URL'];
+  $urlfa = $env['API_FA_URL'];
   // Buat array respons JSON
   $response = array(
     'user' => $user,
@@ -41,7 +43,9 @@ if (isset($_SESSION['user']))
     'urlkeluardetail' => $urlkeluardetail,
     'urlperiode' => $urlperiode,
     'urlscrap' => $urlscrap,
-    'urlmaterial' => $urlmaterial
+    'urlmaterial' => $urlmaterial,
+    'urlfg' => $urlfg,
+    'urlfa' => $urlfa
   );
   echo json_encode($response);
 } else 

@@ -14,7 +14,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>MUTASI MATERIAL</title>
+    <title>MUTASI FIX ASSETS & MACHINE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <style>
@@ -52,7 +52,7 @@ echo "<h3>Selamat datang, " . $_SESSION['user'] . "</h3>";
 <div class="container-fluid mt-3">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">MUTASI MATERIAL</h4>
+            <h4 class="mb-0">MUTASI FIX ASSETS & MACHINE</h4>
         </div>
 
         <div class="card-body">
@@ -138,9 +138,9 @@ function downloadCSV(filename, csvText) {
 let user = '';
 let level = '';
 let urlperiode = '';
-let urlmaterial = '';
+let urlfa = '';
 let data = [];   // <-- variabel global
-let mutasi = 'MT';
+let mutasi = 'FA';
 
 fetch('getsession.php', 
 {
@@ -156,7 +156,7 @@ fetch('getsession.php',
   user = data.user;
   level = data.level;
   urlperiode = data.urlperiode;
-  urlmaterial = data.urlmaterial;  
+  urlfa = data.urlfa;  
   getPeriode(mutasi);
 }) 
 .catch(err => console.error(err));
@@ -196,12 +196,12 @@ async function getPeriode(jenismutasi)
 }
 
 
-async function getMaterial(per,kodebrg)
+async function getFG(per,kodebrg)
 {
   showLoading();
   try 
   {
-    const response = await fetch(urlmaterial, 
+    const response = await fetch(urlfa, 
     {
       method: 'POST',
       credentials: "include",
@@ -264,13 +264,13 @@ document.addEventListener('submit', function(e)
   e.preventDefault();
   const period = document.getElementById('periode').value;
   const partno = document.getElementById('partnumber').value;
-  getMaterial(period,partno);
+  getFG(period,partno);
 
 });
 
 document.getElementById("btnCsv").addEventListener("click", () => {
     const csv = convertToCSV(data);  // ambil data JSON hasil fetch
-    downloadCSV("material.csv", csv);
+    downloadCSV("fixassets.csv", csv);
 });
 
 </script>

@@ -16,8 +16,8 @@
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <li><a class="dropdown-item" href="scrap.php">SCRAP</a></li>
             <li><a class="dropdown-item" href="material.php">MATERIAL</a></li>
-            <li><a class="dropdown-item" href="finishgood.php">FINISH GOOD</a></li>
-            <li><a class="dropdown-item" href="fixasset.php">FIX ASSET & MACHINE</a></li>
+            <li><a class="dropdown-item" href="fg.php">FINISH GOOD</a></li>
+            <li><a class="dropdown-item" href="fa.php">FIX ASSET & MACHINE</a></li>
           </ul>
         </li>
 

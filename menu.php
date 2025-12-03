@@ -11,6 +11,18 @@
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkForecast" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            LAPORAN MUTASI BULANAN
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="scrap.php">SCRAP</a></li>
+            <li><a class="dropdown-item" href="material.php">MATERIAL</a></li>
+            <li><a class="dropdown-item" href="finishgood.php">FINISH GOOD</a></li>
+            <li><a class="dropdown-item" href="fixasset.php">FIX ASSET & MACHINE</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLinkForecast" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             LAPORAN PER BULAN
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">

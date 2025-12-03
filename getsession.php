@@ -30,12 +30,14 @@ if (isset($_SESSION['user']))
   $env = parse_ini_file(__DIR__ . '/.env');
   $urlmasukdetail = $env['API_MASUKDETAIL_URL'];
   $urlkeluardetail = $env['API_KELUARDETAIL_URL'];
+  $urlperiode = $env['API_PERIODE_URL'];
   // Buat array respons JSON
   $response = array(
     'user' => $user,
     'level' => $level,
     'urlmasukdetail' => $urlmasukdetail,
-    'urlkeluardetail' => $urlkeluardetail
+    'urlkeluardetail' => $urlkeluardetail,
+    'urlperiode' => $urlperiode
   );
   echo json_encode($response);
 } else 

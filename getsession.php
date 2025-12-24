@@ -36,6 +36,7 @@ if (isset($_SESSION['user']))
   $urlfg = $env['API_FG_URL'];
   $urlfa = $env['API_FA_URL'];
   $urlsum = $env['API_SUM_URL'];
+  $urlwip = $env['API_WIP_URL'];
   // Buat array respons JSON
   $response = array(
     'user' => $user,
@@ -47,7 +48,8 @@ if (isset($_SESSION['user']))
     'urlmaterial' => $urlmaterial,
     'urlfg' => $urlfg,
     'urlfa' => $urlfa,
-    'urlsum' => $urlsum
+    'urlsum' => $urlsum,
+    'urlwip' => $urlwip
   );
   echo json_encode($response);
 } else 

@@ -28,6 +28,7 @@
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <li><a class="dropdown-item" href="pemasukan.php">Pemasukan</a></li>
             <li><a class="dropdown-item" href="pengeluaran.php">Pengeluaran</a></li>
+            <li><a class="dropdown-item" href="wip.php">Barang Dalam Proses (WIP)</a></li>
           </ul>
         </li>
         
